@@ -1,0 +1,70 @@
+import tkinter as tk
+import math
+
+class KalkulatorCanggih:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Kalkulator Canggih Python")
+        self.root.geometry("400x550")
+        self.root.resizable(False, False)
+
+        self.input_text = tk.StringVar()
+
+        # Entry layar kalkulator
+        input_frame = tk.Frame(self.root, bd=5, relief="ridge")
+        input_frame.pack(side="top", pady=10)
+        
+        input_field = tk.Entry(input_frame, font=('arial', 20, 'bold'), textvariable=self.input_text, width=25, bd=5, relief="sunken", justify="right")
+        input_field.grid(row=0, column=0)
+        input_field.pack(ipady=10)
+
+        # Frame tombol
+        btns_frame = tk.Frame(self.root)
+        btns_frame.pack()
+
+        # Tombol kalkulator
+        tombol = [
+            ("7","8","9","/"),
+            ("4","5","6","*"),
+            ("1","2","3","-"),
+            ("0",".","=","+"),
+            ("sqrt","^","log","C"),
+            ("sin","cos","tan","("),
+            (")","pi","e","del")
+        ]
+
+        for i,row in enumerate(tombol):
+            for j,btn in enumerate(row):
+                b = tk.Button(btns_frame, text=btn, width=8, height=3, font=('arial', 12, 'bold'),
+                              command=lambda x=btn: self.tekan(x))
+                b.grid(row=i, column=j, padx=3, pady=3)
+
+    def tekan(self, key):
+        if key == "=":
+            try:
+                ekspresi = self.input_text.get()
+                ekspresi = ekspresi.replace("^", "**")
+                hasil = eval(ekspresi, {"__builtins__": None}, {
+                    "sqrt": math.sqrt,
+                    "log": math.log,
+                    "sin": math.sin,
+                    "cos": math.cos,
+                    "tan": math.tan,
+                    "pi": math.pi,
+                    "e": math.e,
+                })
+                self.input_text.set(hasil)
+            except Exception:
+                self.input_text.set("Error")
+        elif key == "C":
+            self.input_text.set("")
+        elif key == "del":
+            self.input_text.set(self.input_text.get()[:-1])
+        else:
+            self.input_text.set(self.input_text.get() + key)
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = KalkulatorCanggih(root)
+    root.mainloop()
